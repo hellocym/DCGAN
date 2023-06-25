@@ -110,9 +110,9 @@ for epoch in range(NUM_EPOCHS):
                 )
 
                 writer_real.add_image(
-                    "Mnist Real Images", img_grid_real, global_step=step
+                    "Real Images", img_grid_real, global_step=step
                 )
                 writer_fake.add_image(
-                    "Mnist Fake Images", img_grid_fake, global_step=step
+                    "Fake Images", img_grid_fake, global_step=step
                 )
             step += 1
