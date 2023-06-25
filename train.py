@@ -7,14 +7,28 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from model import Discriminator, Generator, initialize_weights
+# used for create parameters
+import argparse
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f'Running on {device}')
 
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--dataset', type=str, default='mnist', help='dataset to use')
+args = argparser.parse_args()
+
+if args.dataset == 'MNIST':
+    dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
+    CHANNELS_IMG = 1
+elif args.dataset == 'CelebA':
+    dataset = datasets.CelebA(root="dataset/", split="train", transform=transforms, download=True)
+    CHANNELS_IMG = 3
+else:
+    raise Exception('dataset not supported')
+
 LEARNING_RATE = 2e-4
 BATCH_SIZE = 128
 IMAGE_SIZE = 64
-CHANNELS_IMG = 1
 Z_DIM = 100
 NUM_EPOCHS = 5
 FEATURES_D = 64
@@ -28,7 +42,8 @@ transforms = transforms.Compose(
     ]
 )
 
-dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
+
+
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 G = Generator(Z_DIM, CHANNELS_IMG, FEATURES_G).to(device)
 D = Discriminator(CHANNELS_IMG, FEATURES_D).to(device)
