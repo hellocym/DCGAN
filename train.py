@@ -79,7 +79,6 @@ for epoch in range(NUM_EPOCHS):
         D_fake = D(fake).reshape(-1)
         loss_D_fake = criterion(D_fake, torch.zeros_like(D_fake))
         loss_D = (loss_D_real + loss_D_fake) / 2
-
         D.zero_grad()
         loss_D.backward(retain_graph=True)
         optim_D.step()
