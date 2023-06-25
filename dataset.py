@@ -23,10 +23,14 @@ class Downloader:
         if not os.path.exists(os.path.join(dataset_folder, file)):
             print(f"Downloading {file}...")
             wget.download(url, out=os.path.join(dataset_folder, file))
+        if os.path.exists(os.path.join(dataset_folder, "img_align_celeba")):
+            print("Dataset already downloaded, start training...")
+            return
         with zipfile.ZipFile(os.path.join(dataset_folder, file), 'r') as ziphandler:
             print(f"Extracting {file}...")
             ziphandler.extractall(dataset_folder)
             print("Done!")
+            print("Start training...")
 
         
     
