@@ -9,22 +9,14 @@ from torch.utils.tensorboard import SummaryWriter
 from model import Discriminator, Generator, initialize_weights
 # used for create parameters
 import argparse
+from dataset import Downloader
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f'Running on {device}')
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--dataset', type=str, default='mnist', help='dataset to use')
+argparser.add_argument('--dataset', type=str, default='MNIST', help='dataset to use')
 args = argparser.parse_args()
-
-if args.dataset == 'MNIST':
-    dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
-    CHANNELS_IMG = 1
-elif args.dataset == 'CelebA':
-    dataset = datasets.CelebA(root="dataset/", split="train", transform=transforms, download=True)
-    CHANNELS_IMG = 3
-else:
-    raise Exception('dataset not supported')
 
 LEARNING_RATE = 2e-4
 BATCH_SIZE = 128
@@ -33,6 +25,7 @@ Z_DIM = 100
 NUM_EPOCHS = 5
 FEATURES_D = 64
 FEATURES_G = 64
+CHANNELS_IMG = 1
 
 transforms = transforms.Compose(
     [
@@ -41,6 +34,19 @@ transforms = transforms.Compose(
         transforms.Normalize([0.5 for _ in range(CHANNELS_IMG)], [0.5 for _ in range(CHANNELS_IMG)]),
     ]
 )
+
+
+if args.dataset == 'MNIST':
+    dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
+    CHANNELS_IMG = 1
+elif args.dataset == 'CelebA':
+
+    Downloader.download_celeb_a('celeb_dataset/')
+    dataset = datasets.ImageFolder(root="celeb_dataset/", transform=transforms)
+    CHANNELS_IMG = 3
+else:
+    raise Exception('dataset not supported')
+
 
 
 
@@ -86,12 +92,13 @@ for epoch in range(NUM_EPOCHS):
         loss_G.backward()
         optim_G.step()
 
-        if batch_idx % 100 == 0:
+        if batch_idx % 5 == 0:
             print(
-                f"Epoch [{epoch}/{NUM_EPOCHS}] Batch {batch_idx}/{len(dataloader)} \
-                  Loss D: {loss_D:.4f}, loss G: {loss_G:.4f}"
+                f"\rEpoch [{epoch}/{NUM_EPOCHS}] Batch {batch_idx}/{len(dataloader)} \
+                  Loss D: {loss_D:.4f}, loss G: {loss_G:.4f}",
+                end=""
             )
-
+        if batch_idx % 100 == 0:
             with torch.no_grad():
                 fake = G(fixed_noise)
                 # take out (up to) 32 examples
