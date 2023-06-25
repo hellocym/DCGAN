@@ -17,6 +17,9 @@ print(f'Running on {device}')
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--dataset', type=str, default='MNIST', help='dataset to use')
 args = argparser.parse_args()
+if args.dataset not in ['MNIST', 'CelebA']:
+    raise Exception('dataset not supported')
+
 
 LEARNING_RATE = 2e-4
 BATCH_SIZE = 128
@@ -25,7 +28,8 @@ Z_DIM = 100
 NUM_EPOCHS = 5
 FEATURES_D = 64
 FEATURES_G = 64
-CHANNELS_IMG = 1
+CHANNELS_IMG = 1 if args.dataset == 'MNIST' else 3
+
 
 transforms = transforms.Compose(
     [
@@ -38,14 +42,9 @@ transforms = transforms.Compose(
 
 if args.dataset == 'MNIST':
     dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
-    CHANNELS_IMG = 1
 elif args.dataset == 'CelebA':
-
     Downloader.download_celeb_a('celeb_dataset/')
     dataset = datasets.ImageFolder(root="celeb_dataset/", transform=transforms)
-    CHANNELS_IMG = 3
-else:
-    raise Exception('dataset not supported')
 
 
 
