@@ -5,11 +5,12 @@ import torchvision
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder
 from torch.utils.tensorboard import SummaryWriter
 from model import Discriminator, Generator, initialize_weights
 # used for create parameters
 import argparse
-from dataset import Downloader
+from dataset import Downloader, CelebADataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f'Running on {device}')
@@ -30,6 +31,7 @@ FEATURES_D = 64
 FEATURES_G = 64
 CHANNELS_IMG = 1 if args.dataset == 'MNIST' else 3
 
+# print(CHANNELS_IMG)
 
 transforms = transforms.Compose(
     [
@@ -43,13 +45,20 @@ transforms = transforms.Compose(
 if args.dataset == 'MNIST':
     dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms, download=True)
 elif args.dataset == 'CelebA':
-    Downloader.download_celeb_a('celeb_dataset/')
-    dataset = datasets.ImageFolder(root="celeb_dataset/", transform=transforms)
+    # dataset = ImageFolder(root="celeb_dataset/img_align_celeba/img_align_celeba", transform=transforms)
+    Downloader.download_celeb_a('data/')
+    dataset = datasets.ImageFolder(root="data/img_align_celeba", transform=transforms)
+    # dataset = CelebADataset(root='kaggle', split='test', target_type='attr', download=True)
 
 
 
 
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+# show images
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 G = Generator(Z_DIM, CHANNELS_IMG, FEATURES_G).to(device)
 D = Discriminator(CHANNELS_IMG, FEATURES_D).to(device)
 initialize_weights(G)

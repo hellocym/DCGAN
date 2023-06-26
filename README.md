@@ -38,8 +38,12 @@
 > see [requirements.txt](./requirements.txt)
 
 ## Usage
+1. Clone the repo
+2. Install the requirements
+3. If training on CelebA dataset, add kaggle.json to the root directory by following the instructions [here](https://github.com/Kaggle/kaggle-api#api-credentials)
+3. Run the following command to train the model
 
-```
+```bash
 python ./train.py --dataset [MNIST/CelebA]
 ```
 
