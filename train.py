@@ -61,6 +61,8 @@ import numpy as np
 
 G = Generator(Z_DIM, CHANNELS_IMG, FEATURES_G).to(device)
 D = Discriminator(CHANNELS_IMG, FEATURES_D).to(device)
+print(G)
+print(D)
 initialize_weights(G)
 initialize_weights(D)
 
