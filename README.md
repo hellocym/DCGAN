@@ -25,6 +25,7 @@
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
 - [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 </details>
 
@@ -53,3 +54,5 @@ This project is licensed under the **MIT license**.
 
 See [LICENSE](LICENSE) for more information.
 
+## Acknowledgements
+https://github.com/aladdinpersson/Machine-Learning-Collection/tree/master/ML/Pytorch/GANs/
